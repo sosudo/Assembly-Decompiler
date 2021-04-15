@@ -12,11 +12,14 @@ def init(prelines, loop):
   for i in lines:
     if 'END' in i:
       if len(i) == 1:
+        print('print("ACC:", ACC)')
         print('exit()')
       else:
         LABEL = i[0]
         print(indent + 'def ' + LABEL + '():')
+        print(indent + ' ' + 'print("ACC:", ACC)')
         print(indent + ' ' + 'exit()')
+        print(indent + 'print("ACC:", ACC)')
         print(indent + 'exit()')
     elif len(i) == 2:
       OPCODE = i[0]
@@ -165,4 +168,3 @@ def init(prelines, loop):
     else:
       print('print("ERROR: LABEL OPCODE LOC FORMAT NOT FOLLOWED")')
 init(inlines, 0)
-print('print("ACC:", ACC)')

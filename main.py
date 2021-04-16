@@ -1,170 +1,65 @@
 import sys
-sys.stdout = open('out.py', 'w')
-print('ACC = []')
-inlines = []
-N = int(input())
-for i in range(N):
-  inlines.append(input().split(" "))
-def init(prelines, loop):
-  loops = loop
-  indent = ' ' * loops
-  lines = [i for i in prelines]
-  for i in lines:
-    if 'END' in i:
-      if len(i) == 1:
-        print('print("ACC:", ACC)')
-        print('exit()')
-      else:
-        LABEL = i[0]
-        print(indent + 'def ' + LABEL + '():')
-        print(indent + ' ' + 'print("ACC:", ACC)')
-        print(indent + ' ' + 'exit()')
-        print(indent + 'print("ACC:", ACC)')
-        print(indent + 'exit()')
-    elif len(i) == 2:
-      OPCODE = i[0]
-      LOC = i[1]
-      if OPCODE == 'LOAD':
-        if LOC[0] == '=':
-          LOC = LOC[1:]
-        print(indent + 'ACC.append(' + LOC + ')')
-      elif OPCODE == 'STORE':
-        print(indent + LOC + ' = ACC[-1]')
-      elif OPCODE == 'ADD':
-        if LOC[0] == '=':
-          LOC = LOC[1:]
-        print(indent + 'ACC.append(ACC[-1] + ' + LOC + ')')
-      elif OPCODE == 'SUB':
-        if LOC[0] == '=':
-          LOC = LOC[1:]
-        print(indent + 'ACC.append(ACC[-1] - ' + LOC + ')')
-      elif OPCODE == 'MULT':
-        if LOC[0] == '=':
-          LOC = LOC[1:]
-        print(indent + 'ACC.append(ACC[-1] *' + LOC + ')')
-      elif OPCODE == 'DIV':
-        if LOC[0] == '=':
-          LOC = LOC[1:]
-        print(indent + 'ACC.append(ACC[-1] /' + LOC + ')')
-      elif OPCODE == 'READ':
-        print(indent + LOC + ' = int(input())')
-      elif OPCODE == 'PRINT':
-        print(indent + 'print(' + LOC + ')')
-      elif OPCODE == 'BG':
-        print(indent + 'if ACC[-1] > 0:')
-        print(indent + ' ' + LOC + '()')
-      elif OPCODE == 'BE':
-        print(indent + 'if ACC[-1] == 0:')
-        print(indent + ' ' + LOC + '()')
-      elif OPCODE == 'BL':
-        print(indent + 'if ACC[-1] < 0:')
-        print(indent + ' ' + LOC + '()')
-      elif OPCODE == 'BU':
-        print(indent + LOC + '()')
-    elif len(i) == 3:
-      LABEL = i[0]
-      OPCODE = i[1]
-      LOC = i[2]
-      if OPCODE == 'DC':
-        print(indent + LABEL + ' = ' + LOC)
-      elif OPCODE == 'LOAD':
-        print(indent + 'def ' + LABEL + '():')
-        print(indent + ' ' + 'ACC.append(' + LOC + ')')
-        xlines = [i for i in lines]
-        lines = lines[lines.index(i)+1:]
-        loop += 1
-        init(lines, loops+1)
-        print(indent + 'ACC.append(' + LOC + ')')
-        linex = [i for i in xlines]
-        loop -= 1
-      elif OPCODE == 'STORE':
-        print(indent + 'def ' + LABEL + '():')
-        print(indent + ' ' + LOC + ' = ACC[-1]')
-        xlines = [i for i in lines]
-        lines = lines[lines.index(i)+1:]
-        loop += 1
-        init(lines, loops+1)
-        print(indent + LOC + ' = ACC[-1]')
-        linex = [i for i in xlines]
-        loop -= 1
-      elif OPCODE == 'ADD':
-        print(indent + 'def ' + LABEL + '():')
-        if LOC[0] == '=':
-          LOC = LOC[1:]
-        print(indent + ' ' + 'ACC.append(ACC[-1] + ' + LOC + ')')
-        xlines = [i for i in lines]
-        lines = lines[lines.index(i)+1:]
-        loop += 1
-        init(lines, loops+1)
-        if LOC[0] == '=':
-          LOC = LOC[1:]
-        print(indent + 'ACC.append(ACC[-1] + ' + LOC + ')')
-        linex = [i for i in xlines]
-        loop -= 1
-      elif OPCODE == 'SUB':
-        print(indent + 'def ' + LABEL + '():')
-        if LOC[0] == '=':
-          LOC = LOC[1:]
-        print(indent + ' ' + 'ACC.append(ACC[-1] - ' + LOC + ')')
-        xlines = [i for i in lines]
-        lines = lines[lines.index(i)+1:]
-        loop += 1
-        init(lines, loops+1)
-        if LOC[0] == '=':
-          LOC = LOC[1:]
-        print(indent + 'ACC.append(ACC[-1] - ' + LOC + ')')
-        linex = [i for i in xlines]
-        loop -= 1
-      elif OPCODE == 'MULT':
-        print(indent + 'def ' + LABEL + '():')
-        if LOC[0] == '=':
-          LOC = LOC[1:]
-        print(indent + ' ' + 'ACC.append(ACC[-1] * ' + LOC + ')')
-        xlines = [i for i in lines]
-        lines = lines[lines.index(i)+1:]
-        loop += 1
-        init(lines, loops+1)
-        if LOC[0] == '=':
-          LOC = LOC[1:]
-        print(indent + 'ACC.append(ACC[-1] * ' + LOC + ')')
-        linex = [i for i in xlines]
-        loop -= 1
-      elif OPCODE == 'DIV':
-        print(indent + 'def ' + LABEL + '():')
-        if LOC[0] == '=':
-          LOC = LOC[1:]
-        print(indent + 'ACC.append(ACC[-1] / ' + LOC + ')')
-        xlines = [i for i in lines]
-        lines = lines[lines.index(i)+1:]
-        loop += 1
-        init(lines, loops+1)
-        if LOC[0] == '=':
-          LOC = LOC[1:]
-        print(indent + 'ACC.append(ACC[-1] / ' + LOC + ')')
-        linex = [i for i in xlines]
-        loop -= 1
-      elif OPCODE == 'READ':
-        print(indent + 'def ' + LABEL + '():')
-        print(indent + ' ' + LOC + ' = int(input())')
-        xlines = [i for i in lines]
-        lines = lines[lines.index(i)+1:]
-        loop += 1
-        init(lines, loops+1)
-        print(indent + LOC + ' = int(input())')
-        linex = [i for i in xlines]
-        loop -= 1
-      elif OPCODE == 'PRINT':
-        print(indent + 'def ' + LABEL + '():')
-        print(indent + ' ' + 'print(' + LOC + ')')
-        xlines = [i for i in lines]
-        lines = lines[lines.index(i)+1:]
-        loop += 1
-        init(lines, loops+1)
-        print(indent + 'print(' + LOC + ')')
-        linex = [i for i in xlines]
-        loop -= 1
-      else:
-        print('print("ERROR: OPCODE DOES NOT SUPPORT LABELS")')
+sys.stdin = open('in.asm', 'r')
+lines = []
+for line in sys.stdin:
+  append_value = line.split(" ")
+  if len(append_value) > 1: append_value[-1] = append_value[-1][:-1]
+  lines.append(append_value)
+sys.stdin = sys.__stdin__
+ACC = []
+varlocs = {}
+branchlocs = {}
+OPCODES = ['LOAD','STORE','ADD','SUB','MULT','DIV','BG','BE','BL','BU','READ','PRINT','DC','END']
+for i in range(len(lines)):
+  if lines[i][0] not in OPCODES and lines[i][1] != "DC":
+    branchlocs[lines[i][0]] = lines.index(lines[i])-1
+    lines[i].pop(0)
+done = False
+i = 0
+while not done:
+  line = lines[i]
+  if len(line) == 2:
+    OPCODE = line[0]
+    LOC = line[-1]
+    immediate = False
+    if LOC[0] == "=": LOC = LOC[1:]; immediate = True
+    if OPCODE == "LOAD":
+      ACC.append(varlocs[LOC]) if not immediate else ACC.append(int(LOC))
+    elif OPCODE == "STORE":
+      varlocs[LOC] = ACC[-1]
+    elif OPCODE == "ADD":
+      ACC.append(ACC[-1] + varlocs[LOC]) if not immediate else ACC.append(ACC[-1] + int(LOC))
+    elif OPCODE == "SUB":
+      ACC.append(ACC[-1] - varlocs[LOC]) if not immediate else ACC.append(ACC[-1] - int(LOC))
+    elif OPCODE == "MULT":
+      ACC.append(ACC[-1] * varlocs[LOC]) if not immediate else ACC.append(ACC[-1] * int(LOC))
+    elif OPCODE == "DIV":
+      ACC.append(ACC[-1] / varlocs[LOC]) if not immediate else ACC.append(ACC[-1] / int(LOC))
+    elif OPCODE == "BG":
+      if ACC[-1] > 0: i = branchlocs[LOC]
+    elif OPCODE == "BE":
+      if ACC[-1] == 0: i = branchlocs[LOC]
+    elif OPCODE == "BL":
+      if ACC[-1] < 0: i = branchlocs[LOC]
+    elif OPCODE == "BU":
+      i = branchlocs[LOC]
+    elif OPCODE == "READ":
+      varlocs[LOC] = int(input("READ: "))
+    elif OPCODE == "PRINT":
+      print("PRINT:", varlocs[LOC]) if not immediate else print("PRINT:", LOC)
     else:
-      print('print("ERROR: LABEL OPCODE LOC FORMAT NOT FOLLOWED")')
-init(inlines, 0)
+      done = True
+  elif len(line) == 3:
+    LABEL = line[0]
+    OPCODE = line[1]
+    LOC = line[-1]
+    if OPCODE == "DC":
+      varlocs[LABEL] = int(LOC)
+    else:
+      done = True
+  else:
+    done = True
+  i += 1
+for i in varlocs.keys():
+  print(i + ":", varlocs[i])
+print("ACC:", ACC)
